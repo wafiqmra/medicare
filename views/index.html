@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicare - Layanan Kesehatan Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --secondary: #264653;
+      --accent: #e9c46a;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --danger: #e76f51;
+      --success: #2a9d8f;
+      --pharmacy: #f4a261;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 1.5rem;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+    
+    nav ul li a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .hero {
+      background: url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      color: white;
+      text-align: center;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 0 20px;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--accent);
+      color: var(--dark);
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid white;
+      color: white;
+      margin-left: 1rem;
+    }
+    
+    .btn-outline:hover {
+      background-color: white;
+      color: var(--dark);
+    }
+    
+    .btn-pharmacy {
+      background-color: var(--pharmacy);
+      color: var(--dark);
+    }
+    
+    .btn-pharmacy:hover {
+      background-color: #f4a261;
+    }
+    
+    .features {
+      padding: 5rem 0;
+      background-color: white;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+    
+    .section-title p {
+      color: #6c757d;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background-color: var(--light);
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .pharmacy-icon {
+      color: var(--pharmacy);
+    }
+    
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+    
+    .feature-card p {
+      color: #6c757d;
+    }
+    
+    .pharmacy-banner {
+      background: linear-gradient(135deg, var(--pharmacy), #e9c46a);
+      padding: 2rem;
+      border-radius: 10px;
+      margin: 3rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--dark);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .pharmacy-banner h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pharmacy-banner p {
+      max-width: 600px;
+    }
+    
+    .pharmacy-banner .btn {
+      background-color: var(--secondary);
+      color: white;
+      white-space: nowrap;
+    }
+    
+    footer {
+      background-color: var(--secondary);
+      color: white;
+      padding: 3rem 0 1.5rem;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-column h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 2px;
+      background-color: var(--accent);
+    }
+    
+    .footer-column ul {
+      list-style: none;
+    }
+    
+    .footer-column ul li {
+      margin-bottom: 0.8rem;
+    }
+    
+    .footer-column ul li a {
+      color: #adb5bd;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .footer-column ul li a:hover {
+      color: white;
+      padding-left: 5px;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      background-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #adb5bd;
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      nav ul li {
+        margin: 0.5rem;
+      }
+      
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      
+      .pharmacy-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .pharmacy-banner .btn {
+        margin-top: 1rem;
+      }
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animated {
+      animation: fadeIn 1s ease-out forwards;
+    }
+    
+    .delay-1 {
+      animation-delay: 0.2s;
+    }
+    
+    .delay-2 {
+      animation-delay: 0.4s;
+    }
+    
+    .delay-3 {
+      animation-delay: 0.6s;
+    }
+    
+    .delay-4 {
+      animation-delay: 0.8s;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <i class="fas fa-heartbeat"></i>
+        <span>Medicare</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="/">Beranda</a></li>
+          <li><a href="/diagnosa">Diagnosa</a></li>
+          <li><a href="/telemedicine">Telemedicine</a></li>
+          <li><a href="/risetobat">Riset Obat</a></li>
+          <li><a href="/apotek">Apotek</a></li>
+          <li><a href="/logout" class="btn btn-outline">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="animated">Selamat Datang di Medicare</h1>
+      <p class="animated delay-1">Platform kesehatan digital terpadu untuk diagnosa medis, konsultasi dokter online, riset obat, dan pembelian obat.</p>
+      <div class="animated delay-2">
+        <a href="/diagnosa" class="btn btn-primary">Mulai Diagnosa</a>
+        <a href="/apotek" class="btn btn-pharmacy">Beli Obat</a>
+        <a href="/telemedicine" class="btn btn-outline">Konsultasi Dokter</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="features">
+    <div class="container">
+      <div class="section-title animated">
+        <h2>Layanan Kami</h2>
+        <p>Medicare menyediakan berbagai layanan kesehatan digital yang dapat diakses kapan saja dan dimana saja</p>
+      </div>
+      
+      <div class="pharmacy-banner animated delay-1">
+        <div>
+          <h2>Apotek Online Medicare</h2>
+          <p>Beli obat dengan resep dokter atau produk kesehatan lainnya dengan mudah. Gratis ongkir untuk pembelian di atas Rp100.000. Dapatkan obat Anda dalam waktu 24 jam!</p>
+        </div>
+        <a href="/apotek" class="btn">Lihat Produk</a>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card animated delay-1">
+          <div class="feature-icon">
+            <i class="fas fa-stethoscope"></i>
+          </div>
+          <h3>Diagnosa Medis</h3>
+          <p>Sistem diagnosa cerdas yang membantu mengidentifikasi kondisi kesehatan berdasarkan gejala yang dialami</p>
+          <a href="/diagnosa" class="btn" style="margin-top: 1rem;">Coba Sekarang</a>
+        </div>
+        
+        <div class="feature-card animated delay-2">
+          <div class="feature-icon">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <h3>Telemedicine</h3>
+          <p>Konsultasi langsung dengan dokter profesional melalui video call tanpa perlu keluar rumah</p>
+          <a href="/telemedicine" class="btn" style="margin-top: 1rem;">Buat Janji</a>
+        </div>
+        
+        <div class="feature-card animated delay-3">
+          <div class="feature-icon">
+            <i class="fas fa-pills"></i>
+          </div>
+          <h3>Riset Obat</h3>
+          <p>Database lengkap informasi obat-obatan, interaksi obat, dan penelitian terbaru di bidang farmasi</p>
+          <a href="/risetobat" class="btn" style="margin-top: 1rem;">Telusuri</a>
+        </div>
+        
+        <div class="feature-card animated delay-4">
+          <div class="feature-icon pharmacy-icon">
+            <i class="fas fa-prescription-bottle-alt"></i>
+          </div>
+          <h3>Apotek Online</h3>
+          <p>Belanja obat dan produk kesehatan dengan mudah. Pengiriman cepat ke seluruh Indonesia dengan layanan resep dokter.</p>
+          <a href="/apotek" class="btn btn-pharmacy" style="margin-top: 1rem;">Beli Sekarang</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Tentang Medicare</h3>
+          <p>Platform kesehatan digital yang menghubungkan pasien dengan layanan kesehatan modern secara efisien dan terjangkau.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Layanan</h3>
+          <ul>
+            <li><a href="/diagnosa">Diagnosa Medis</a></li>
+            <li><a href="/telemedicine">Telemedicine</a></li>
+            <li><a href="/risetobat">Riset Obat</a></li>
+            <li><a href="/apotek">Apotek Online</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Pembelian Obat</h3>
+          <ul>
+            <li><a href="/apotek">Produk Kesehatan</a></li>
+            <li><a href="/apotek/resep">Upload Resep</a></li>
+            <li><a href="/apotek/promo">Promo Obat</a></li>
+            <li><a href="/apotek/tracking">Lacak Pesanan</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Kontak</h3>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</li>
+            <li><i class="fas fa-phone"></i> +62 21 1234 5678</li>
+            <li><i class="fas fa-envelope"></i> hello@medicare.id</li>
+            <li><i class="fas fa-clock"></i> Buka 24/7</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        <p>&copy; 2023 Medicare. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animation trigger
+      const animatedElements = document.querySelectorAll('.animated');
+      animatedElements.forEach(el => el.style.opacity = 1);
+      
+      // Feature card hover effects
+      const featureCards = document.querySelectorAll('.feature-card');
+      featureCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.querySelector('.feature-icon').style.transform = 'scale(1.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          this.querySelector('.feature-icon').style.transform = 'scale(1)';
+        });
+      });
+      
+      // Simple cart counter (would be connected to backend in real implementation)
+      const cartCount = localStorage.getItem('medicareCartCount') || 0;
+      if(cartCount > 0) {
+        const cartIcon = document.createElement('span');
+        cartIcon.className = 'cart-counter';
+        cartIcon.textContent = cartCount;
+        cartIcon.style.cssText = `
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          background-color: var(--danger);
+          color: white;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.7rem;
+        `;
+        
+        const apotekLink = document.querySelector('nav a[href="/apotek"]');
+        if(apotekLink) {
+          apotekLink.style.position = 'relative';
+          apotekLink.appendChild(cartIcon);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

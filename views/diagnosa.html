@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Diagnosa Medis</title>
+</head>
+<body>
+  <h1>Diagnosa Medis</h1>
+  <form action="/diagnosa" method="POST">
+    <label>Keluhan utama:</label><br>
+    <textarea name="keluhan" required></textarea><br><br>
+
+    <label>Sudah berapa lama keluhan ini terjadi?</label><br>
+    <input type="text" name="durasi" required><br><br>
+
+    <label>Seberapa parah gejalanya?</label><br>
+    <select name="keparahan">
+      <option value="ringan">Ringan</option>
+      <option value="sedang">Sedang</option>
+      <option value="berat">Berat</option>
+    </select><br><br>
+
+    <label>Gejala tambahan:</label><br>
+    <input type="checkbox" name="gejala[]" value="demam"> Demam<br>
+    <input type="checkbox" name="gejala[]" value="batuk"> Batuk<br>
+    <input type="checkbox" name="gejala[]" value="mual"> Mual<br>
+    <input type="checkbox" name="gejala[]" value="pusing"> Pusing<br><br>
+
+    <label>Riwayat penyakit sebelumnya:</label><br>
+    <input type="text" name="riwayat"><br><br>
+
+    <label>Obat yang sedang dikonsumsi:</label><br>
+    <input type="text" name="obat"><br><br>
+
+    <label>Alergi obat atau makanan:</label><br>
+    <input type="text" name="alergi"><br><br>
+
+    <button type="submit">Diagnosa</button>
+  </form>
+
+  <br>
+  <a href="/">⬅ Kembali ke Menu</a>
+</body>
+</html>

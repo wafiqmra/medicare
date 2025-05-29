@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apotek Online - Medicare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2a9d8f;
+      --secondary: #264653;
+      --accent: #e9c46a;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --danger: #e76f51;
+      --success: #2a9d8f;
+      --pharmacy: #f4a261;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 1.5rem;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+    
+    nav ul li a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .pharmacy-header {
+      background: linear-gradient(135deg, var(--pharmacy), #e9c46a);
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--secondary);
+    }
+    
+    .pharmacy-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .pharmacy-header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 3rem 0;
+    }
+    
+    .service-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .service-icon {
+      font-size: 3rem;
+      color: var(--pharmacy);
+      margin-bottom: 1.5rem;
+    }
+    
+    .service-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--pharmacy);
+      color: var(--secondary);
+      padding: 0.8rem 1.8rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background-color: #f4a261;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--secondary);
+      color: var(--secondary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    footer {
+      background-color: var(--secondary);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+    
+    /* E-Commerce Additions */
+    .search-bar {
+      margin: 2rem auto;
+      max-width: 600px;
+      position: relative;
+    }
+    
+    .search-bar input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .search-bar button {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background: var(--pharmacy);
+      border: none;
+      border-radius: 50px;
+      padding: 0.7rem 1.5rem;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .product-categories {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+      margin: 2rem 0;
+    }
+    
+    .category-chip {
+      background: white;
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .category-chip:hover, .category-chip.active {
+      background: var(--pharmacy);
+      color: white;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+      height: 200px;
+      background: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .product-image img {
+      max-height: 80%;
+      max-width: 80%;
+      object-fit: contain;
+    }
+    
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--danger);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .product-info {
+      padding: 1.5rem;
+    }
+    
+    .product-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .product-price {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .product-original-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+    
+    .product-rating {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .product-actions {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .cart-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex-grow: 1;
+      margin-right: 0.5rem;
+    }
+    
+    .cart-btn:hover {
+      background: #228176;
+    }
+    
+    .wishlist-btn {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 40px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .wishlist-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    
+    /* Cart sidebar */
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background: white;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      z-index: 1000;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    
+    .cart-sidebar.active {
+      right: 0;
+    }
+    
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .cart-items {
+      margin-bottom: 1.5rem;
+    }
+    
+    .cart-item {
+      display: flex;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .cart-item-img {
+      width: 80px;
+      height: 80px;
+      background: #f5f7fa;
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .cart-item-img img {
+      max-width: 80%;
+      max-height: 80%;
+    }
+    
+    .cart-item-details {
+      flex-grow: 1;
+    }
+    
+    .cart-item-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .cart-item-price {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+    }
+    
+    .quantity-btn {
+      width: 25px;
+      height: 25px;
+      background: #f0f0f0;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .quantity-input {
+      width: 40px;
+      text-align: center;
+      border: 1px solid #ddd;
+      margin: 0 5px;
+    }
+    
+    .remove-item {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+    }
+    
+    .cart-summary {
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+    
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    
+    .checkout-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .checkout-btn:hover {
+      background: #228176;
+    }
+    
+    .cart-icon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--primary);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 999;
+    }
+    
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+        justify-content: center;
+      }
+      
+      nav ul li {
+        margin: 0 0.5rem;
+      }
+      
+      .pharmacy-header h1 {
+        font-size: 2rem;
+      }
+      
+      .pharmacy-header p {
+        font-size: 1rem;
+      }
+      
+      .cart-sidebar {
+        width: 90%;
+        right: -90%;
+      }
+      
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      
+      .product-title {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <i class="fas fa-heartbeat"></i>
+        <span>Medicare</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="/">Beranda</a></li>
+          <li><a href="/diagnosa">Diagnosa</a></li>
+          <li><a href="/telemedicine">Telemedicine</a></li>
+          <li><a href="/risetobat">Riset Obat</a></li>
+          <li><a href="/apotek" class="active">Apotek</a></li>
+          <li><a href="/logout" class="btn btn-outline">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <section class="pharmacy-header">
+    <div class="container">
+      <h1>Apotek Online Medicare</h1>
+      <p>Layanan pembelian obat dan produk kesehatan online dengan kemudahan dan keamanan terjamin</p>
+    </div>
+  </section>
+  
+  <main class="container">
+    <!-- Fitur Pencarian -->
+    <div class="search-bar">
+      <input type="text" placeholder="Cari obat, vitamin, atau produk kesehatan...">
+      <button><i class="fas fa-search"></i></button>
+    </div>
+    
+    <!-- Kategori Produk -->
+    <div class="product-categories">
+      <div class="category-chip active">Semua Produk</div>
+      <div class="category-chip">Obat Bebas</div>
+      <div class="category-chip">Obat Resep</div>
+      <div class="category-chip">Vitamin</div>
+      <div class="category-chip">Alat Kesehatan</div>
+      <div class="category-chip">Perawatan Tubuh</div>
+      <div class="category-chip">Ibu & Anak</div>
+      <div class="category-chip">Promo</div>
+    </div>
+    
+    <!-- Daftar Produk -->
+    <div class="products-grid">
+      <!-- Produk 1 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Paracetamol 500mg">
+          <div class="product-badge">Diskon 20%</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Paracetamol 500mg Tablet 10s</h3>
+          <div class="product-price">Rp 15.000 <span class="product-original-price">Rp 18.750</span></div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            (124)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Produk 2 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Vitamin C">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Vitamin C 500mg Kaplet 30s</h3>
+          <div class="product-price">Rp 45.000</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+            (89)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Produk 3 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Masker Medis">
+          <div class="product-badge">Terlaris</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Masker Medis 3 Ply Box 50s</h3>
+          <div class="product-price">Rp 75.000</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            (256)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Produk 4 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Omeprazole">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Omeprazole 20mg Kapsul 10s</h3>
+          <div class="product-price">Rp 32.500</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+            (67)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Produk 5 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Thermometer Digital">
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Thermometer Digital Infrared</h3>
+          <div class="product-price">Rp 185.000</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            <i class="far fa-star"></i>
+            (42)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Produk 6 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://via.placeholder.com/150" alt="Vitamin D3">
+          <div class="product-badge">Baru</div>
+        </div>
+        <div class="product-info">
+          <h3 class="product-title">Vitamin D3 1000IU Softgel 30s</h3>
+          <div class="product-price">Rp 120.000</div>
+          <div class="product-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+            (38)
+          </div>
+          <div class="product-actions">
+            <button class="cart-btn">+ Keranjang</button>
+            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Layanan Apotek -->
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-prescription-bottle-alt"></i>
+        </div>
+        <h2>Upload Resep Dokter</h2>
+        <p>Kirim resep dokter Anda dan kami akan menyiapkan obat yang Anda butuhkan</p>
+        <a href="/apotek/resep" class="btn">Upload Sekarang</a>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-pills"></i>
+        </div>
+        <h2>Belanja Produk Kesehatan</h2>
+        <p>Temukan berbagai obat bebas, vitamin, dan alat kesehatan dengan harga terbaik</p>
+        <a href="/apotek/produk" class="btn">Lihat Produk</a>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-truck"></i>
+        </div>
+        <h2>Lacak Pesanan</h2>
+        <p>Pantau status pengiriman pesanan Anda secara real-time</p>
+        <a href="/apotek/lacak" class="btn">Lacak Sekarang</a>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-percentage"></i>
+        </div>
+        <h2>Promo Spesial</h2>
+        <p>Dapatkan penawaran menarik dan diskon untuk produk kesehatan</p>
+        <a href="/apotek/promo" class="btn">Lihat Promo</a>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <h2>Riwayat Pembelian</h2>
+        <p>Lihat dan kelola semua pesanan yang pernah Anda buat</p>
+        <a href="/apotek/riwayat" class="btn">Lihat Riwayat</a>
+      </div>
+      
+      <div class="service-card">
+        <div class="service-icon">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h2>Bantuan Apoteker</h2>
+        <p>Konsultasi gratis dengan apoteker kami untuk informasi obat</p>
+        <a href="/apotek/bantuan" class="btn">Hubungi Kami</a>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Floating Cart Icon -->
+  <div class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count">3</span>
+  </div>
+  
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar">
+    <div class="cart-header">
+      <h2>Keranjang Belanja (3)</h2>
+      <button class="close-cart">&times;</button>
+    </div>
+    
+    <div class="cart-items">
+      <!-- Item 1 -->
+      <div class="cart-item">
+        <div class="cart-item-img">
+          <img src="https://via.placeholder.com/80" alt="Paracetamol">
+        </div>
+        <div class="cart-item-details">
+          <h4 class="cart-item-title">Paracetamol 500mg Tablet 10s</h4>
+          <div class="cart-item-price">Rp 15.000</div>
+          <div class="cart-item-actions">
+            <div class="quantity-control">
+              <button class="quantity-btn">-</button>
+              <input type="text" class="quantity-input" value="1">
+              <button class="quantity-btn">+</button>
+            </div>
+            <button class="remove-item">Hapus</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item 2 -->
+      <div class="cart-item">
+        <div class="cart-item-img">
+          <img src="https://via.placeholder.com/80" alt="Vitamin C">
+        </div>
+        <div class="cart-item-details">
+          <h4 class="cart-item-title">Vitamin C 500mg Kaplet 30s</h4>
+          <div class="cart-item-price">Rp 45.000</div>
+          <div class="cart-item-actions">
+            <div class="quantity-control">
+              <button class="quantity-btn">-</button>
+              <input type="text" class="quantity-input" value="2">
+              <button class="quantity-btn">+</button>
+            </div>
+            <button class="remove-item">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cart-summary">
+      <div class="cart-total">
+        <span>Total Belanja</span>
+        <span>Rp 105.000</span>
+      </div>
+      <button class="checkout-btn">Lanjut ke Pembayaran</button>
+    </div>
+  </div>
+  
+  <!-- Overlay -->
+  <div class="overlay"></div>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#">Tentang Kami</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Syarat & Ketentuan</a>
+        <a href="#">FAQ</a>
+      </div>
+      <p>&copy; 2023 Medicare. Seluruh hak cipta dilindungi.</p>
+    </div>
+  </footer>
+  
+  <script>
+    // Simple animation for service cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.service-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.5s ease ' + (index * 0.1) + 's';
+        
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 100);
+      });
+      
+      // Cart functionality
+      const cartIcon = document.querySelector('.cart-icon');
+      const cartSidebar = document.querySelector('.cart-sidebar');
+      const closeCart = document.querySelector('.close-cart');
+      const overlay = document.querySelector('.overlay');
+      
+      cartIcon.addEventListener('click', function() {
+        cartSidebar.classList.add('active');
+        overlay.classList.add('active');
+      });
+      
+      closeCart.addEventListener('click', function() {
+        cartSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+      
+      overlay.addEventListener('click', function() {
+        cartSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+      
+      // Add to cart buttons
+      const addToCartButtons = document.querySelectorAll('.cart-btn');
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const productCard = this.closest('.product-card');
+          const productName = productCard.querySelector('.product-title').textContent;
+          const productPrice = productCard.querySelector('.product-price').textContent;
+          
+          // In a real app, you would add this to your cart state/data structure
+          alert(`${productName} telah ditambahkan ke keranjang!`);
+          
+          // Update cart count
+          const cartCount = document.querySelector('.cart-count');
+          cartCount.textContent = parseInt(cartCount.textContent) + 1;
+        });
+      });
+      
+      // Category chips
+      const categoryChips = document.querySelectorAll('.category-chip');
+      categoryChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          categoryChips.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          // In a real app, you would filter products here
+        });
+      });
+      
+      // Quantity controls in cart
+      const quantityBtns = document.querySelectorAll('.quantity-btn');
+      quantityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const input = this.parentElement.querySelector('.quantity-input');
+          let value = parseInt(input.value);
+          
+          if (this.textContent === '+' && value < 10) {
+            input.value = value + 1;
+          } else if (this.textContent === '-' && value > 1) {
+            input.value = value - 1;
+          }
+          
+          // In a real app, you would update cart total here
+        });
+      });
+      
+      // Remove item from cart
+      const removeBtns = document.querySelectorAll('.remove-item');
+      removeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const cartItem = this.closest('.cart-item');
+          cartItem.remove();
+          
+          // In a real app, you would update cart count and total here
+        });
+      });
+    });
+  </script>
+</body>
+</html>

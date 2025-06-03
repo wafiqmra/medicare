@@ -51,20 +51,47 @@
       left: 20px;
       top: 50%;
       transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.2);
       color: white;
       text-decoration: none;
-      font-size: 1.2rem;
+      font-size: 14px;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      border-radius: 4px;
-      transition: background-color 0.3s;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 25px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .back-button:hover {
-      background-color: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.5);
       text-decoration: none;
+      color: white;
+      transform: translateY(-50%) translateX(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .back-button:active {
+      transform: translateY(-50%) translateX(-1px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .back-button i {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    .back-button:hover i {
+      transform: translateX(-2px);
+    }
+
+    .back-button .back-text {
+      display: inline;
     }
 
     header h1 {
@@ -552,12 +579,18 @@
       }
 
       header h1 {
-        padding-left: 40px;
-        padding-right: 40px;
+        padding-left: 60px;
+        padding-right: 20px;
       }
 
       .back-button {
-        left: 10px;
+        left: 15px;
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .back-button .back-text {
+        display: none;
       }
     }
 
@@ -573,13 +606,21 @@
       .modal-content {
         padding: 20px;
       }
+
+      .back-button {
+        left: 10px;
+        padding: 8px 10px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Kembali</a>
+      <a href="#" class="back-button" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> 
+        <span class="back-text">Kembali</span>
+      </a>
       <h1><i class="fas fa-prescription-bottle-alt"></i> Apotek Medicare</h1>
       <div class="search-container">
         <input type="text" id="searchInput" placeholder="Cari obat...">
@@ -760,6 +801,16 @@
     // Cart state
     let cart = [];
 
+    // Back button functionality
+    function goBack() {
+      if (document.referrer) {
+        window.history.back();
+      } else {
+        // Fallback - you can change this to your home page URL
+        window.location.href = '/';
+      }
+    }
+
     // Initialize the app
     function init() {
       renderProducts(products);
@@ -802,11 +853,107 @@
       });
     }
 
-    // Load cart from localStorage
+    // Load cart from memory (removed localStorage usage)
     function loadCart() {
-      const savedCart = localStorage.getItem('pharmacyCart');
-      if (savedCart) {
-        cart = JSON.parse(savedCart);
+      // Cart is already initialized as empty array
+      renderCart();
+    }
+
+    // Save cart (placeholder function)
+    function saveCart() {
+      // Note: localStorage is not used in Claude.ai artifacts
+      // In a real environment, you would save to localStorage here
+    }
+
+    // Render cart items
+    function renderCart() {
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Keranjang belanja kosong</p>
+          </div>
+        `;
+        checkoutBtn.disabled = true;
+        cartTotal.textContent = 'Rp 0';
+        return;
+      }
+      
+      cartItems.innerHTML = '';
+      let total = 0;
+      
+      cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        const subtotal = product.price * item.quantity;
+        total += subtotal;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <div class="cart-item-info">
+            <p class="cart-item-name">${product.name}</p>
+            <p class="cart-item-price">Rp ${product.price.toLocaleString()}</p>
+          </div>
+          <div class="cart-item-quantity">
+            <button class="decrease-quantity" data-id="${product.id}">-</button>
+            <span>${item.quantity}</span>
+            <button class="increase-quantity" data-id="${product.id}">+</button>
+          </div>
+          <p class="cart-item-total">Rp ${subtotal.toLocaleString()}</p>
+          <button class="remove-item" data-id="${product.id}"><i class="fas fa-trash"></i></button>
+        `;
+        cartItems.appendChild(cartItem);
+      });
+      
+      cartTotal.textContent = `Rp ${total.toLocaleString()}`;
+      checkoutBtn.disabled = false;
+    }
+
+    // Add product to cart
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const existingItem = cart.find(item => item.id === productId);
+      if (existingItem) {
+        if (existingItem.quantity < product.stock) {
+          existingItem.quantity++;
+        } else {
+          alert('Stok tidak mencukupi');
+          return;
+        }
+      } else {
+        cart.push({ id: productId, quantity: 1 });
+      }
+      
+      saveCart();
+      renderCart();
+    }
+
+    // Remove product from cart
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+      renderCart();
+    }
+
+    // Update product quantity in cart
+    function updateQuantity(productId, change) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const cartItem = cart.find(item => item.id === productId);
+      if (!cartItem) return;
+      
+      const newQuantity = cartItem.quantity + change;
+      
+      if (newQuantity < 1) {
+        removeFromCart(productId);
+      } else if (newQuantity > product.stock) {
+        alert('Stok tidak mencukupi');
+      } else {
+        cartItem.quantity = newQuantity;
+        saveCart();
         renderCart();
       }
     }

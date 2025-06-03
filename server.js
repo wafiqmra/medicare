@@ -5,18 +5,22 @@ const path = require('path');
 const db = require('./db');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
+// Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
+// Session configuration
 app.use(session({
   secret: 'rahasia-kesehatan',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
-// Middleware untuk proteksi login
+// Authentication middleware
 function requireLogin(req, res, next) {
   if (!req.session.username) {
     return res.redirect('/login');
@@ -24,40 +28,42 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// Halaman utama - hanya bisa diakses kalau sudah login
-app.get('/', (req, res) => {
-  if (!req.session.username) {
-    return res.redirect('/login');
-  }
+// View routes
+app.get('/', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'views/index.html'));
 });
 
-// Halaman register
+app.get('/login', (req, res) => {
+  if (req.session.username) {
+    return res.redirect('/');
+  }
+  res.sendFile(path.join(__dirname, 'views/login.html'));
+});
+
 app.get('/register', (req, res) => {
+  if (req.session.username) {
+    return res.redirect('/');
+  }
   res.sendFile(path.join(__dirname, 'views/register.html'));
 });
 
+// Authentication routes
 app.post('/register', (req, res) => {
   const { username, password } = req.body;
 
   const checkQuery = 'SELECT * FROM users WHERE username = ?';
   db.query(checkQuery, [username], (err, results) => {
-    if (err) return res.send('Error checking user.');
+    if (err) return res.status(500).send('Error checking user.');
     if (results.length > 0) {
-      return res.send('Username sudah terdaftar. <a href="/register">Coba lagi</a>');
+      return res.status(400).send('Username sudah terdaftar. <a href="/register">Coba lagi</a>');
     }
 
     const insertQuery = 'INSERT INTO users (username, password) VALUES (?, ?)';
     db.query(insertQuery, [username, password], (err) => {
-      if (err) return res.send('Gagal menyimpan user.');
+      if (err) return res.status(500).send('Gagal menyimpan user.');
       res.redirect('/login');
     });
   });
-});
-
-// Halaman login
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views/login.html'));
 });
 
 app.post('/login', (req, res) => {
@@ -65,32 +71,52 @@ app.post('/login', (req, res) => {
 
   const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
   db.query(query, [username, password], (err, results) => {
-    if (err) return res.send('Error saat login.');
+    if (err) return res.status(500).send('Error saat login.');
     if (results.length > 0) {
       req.session.username = username;
-      res.redirect('/');
-    } else {
-      res.send('Login gagal. <a href="/login">Coba lagi</a>');
+      return res.redirect('/');
     }
+    res.status(401).send('Login gagal. <a href="/login">Coba lagi</a>');
   });
 });
 
-// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login');
   });
 });
 
-const apotekRouter = require('./routes/apotek');
-app.use('/apotek', requireLogin, apotekRouter);
+// Protected feature routes
+const featureRouters = {
+  '/apotek': require('./routes/apotek'),
+  '/diagnosa': require('./routes/diagnosa'),
+  '/telemedicine': require('./routes/telemedicine'),
+  '/risetobat': require('./routes/risetobat'),
+  '/uploadresep': require('./routes/uploadresep'),
+  '/promoobat': require('./routes/promoobat'),
+  '/lacakpesanan': require('./routes/lacakpesanan')
+};
 
+// Register all protected routes
+Object.entries(featureRouters).forEach(([path, router]) => {
+  app.use(path, requireLogin, router);
+});
 
-// Routing terproteksi
-app.use('/diagnosa', requireLogin, require('./routes/diagnosa'));
-app.use('/telemedicine', requireLogin, require('./routes/telemedicine'));
-app.use('/risetobat', requireLogin, require('./routes/risetobat'));
+// Static files
+app.use('/views', express.static(path.join(__dirname, 'views')));
 
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Terjadi kesalahan pada server');
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send('Halaman tidak ditemukan');
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
 });

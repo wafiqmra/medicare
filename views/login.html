@@ -1,130 +1,133 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Anda</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
-        }
-        
-        .login-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        h1 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: #2c3e50;
-        }
-        
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        button {
-            width: 100%;
-            padding: 0.8rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .register-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .register-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Medicare</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #d4fc79, #96e6a1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #1e293b;
+    }
+
+    .login-box {
+      background: #ffffff;
+      padding: 40px 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .login-box img {
+      width: 60px;
+      margin-bottom: 12px;
+    }
+
+    .login-box h1 {
+      margin-bottom: 24px;
+      font-size: 24px;
+      color: #0f5132;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #20c997;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(32, 201, 151, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #20c997;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #17a589;
+    }
+
+    .register-link {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #0d6efd;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #e11d48;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Masuk ke Akun Anda</h1>
-        
-        <form method="POST" action="/login">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required placeholder="Masukkan username Anda">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Masukkan password Anda">
-            </div>
-            
-            <button type="submit">Masuk</button>
-            
-            <!-- Tempat untuk menampilkan pesan error jika ada -->
-            <?php if (isset($error)): ?>
-                <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
-            <?php endif; ?>
-        </form>
-        
-        <div class="register-link">
-            Belum punya akun? <a href="/register">Daftar sekarang</a>
-        </div>
+  <div class="login-box">
+    <img src="https://cdn-icons-png.flaticon.com/512/2966/2966483.png" alt="Medicare Icon" />
+    <h1>Login ke Medicare</h1>
+
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Masukkan username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Masukkan password" required />
+      </div>
+
+      <button type="submit">Masuk</button>
+
+      <?php if (isset($error)): ?>
+        <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+      <?php endif; ?>
+    </form>
+
+    <div class="register-link">
+      Belum punya akun? <a href="/register">Daftar sekarang</a>
     </div>
+  </div>
 </body>
 </html>

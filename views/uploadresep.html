@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Resep - Medicare</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    /* Navbar Horizontal */
+    .navbar {
+      background-color: #009688;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      color: white;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links li a:hover {
+      opacity: 0.8;
+    }
+
+    .btn-outline {
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .btn-outline:hover {
+      background-color: white;
+      color: #009688;
+    }
+
+    /* Main Content */
+    main {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #009688;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .form-box, .upload-info {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background-color: #009688;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #00796b;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    ol {
+      padding-left: 1.2rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo"><i class="fas fa-heartbeat"></i> Medicare</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/">Beranda</a></li>
+        <li><a href="/diagnosa">Diagnosa</a></li>
+        <li><a href="/telemedicine">Telemedicine</a></li>
+        <li><a href="/risetobat">Riset Obat</a></li>
+        <li><a href="/apotek">Apotek</a></li>
+      </ul>
+    </nav>
+    <a href="/logout" class="btn-outline">Logout</a>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h1 class="title">Upload Resep Dokter</h1>
+    <div class="upload-section">
+      <form id="prescription-form" action="/api/upload-resep" method="POST" enctype="multipart/form-data" class="form-box">
+        <div class="form-group">
+          <label for="patient-name">Nama Pasien</label>
+          <input type="text" id="patient-name" name="patientName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="doctor-name">Nama Dokter</label>
+          <input type="text" id="doctor-name" name="doctorName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="prescription-date">Tanggal Resep</label>
+          <input type="date" id="prescription-date" name="prescriptionDate" required />
+        </div>
+
+        <div class="form-group">
+          <label for="prescription-file">Upload Resep</label>
+          <input type="file" id="prescription-file" name="prescriptionFile" accept=".pdf,.jpg,.jpeg,.png" required />
+          <p class="hint">Format: PDF, JPG, JPEG, PNG (maks. 5MB)</p>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Catatan Tambahan</label>
+          <textarea id="notes" name="notes" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Kirim Resep</button>
+      </form>
+
+      <div class="upload-info">
+        <h3><i class="fas fa-info-circle"></i> Petunjuk Upload Resep</h3>
+        <ol>
+          <li>Pastikan foto resep jelas dan terbaca</li>
+          <li>Resep harus memiliki nama dokter dan pasien</li>
+          <li>Resep harus masih berlaku (tidak lebih dari 3 bulan)</li>
+          <li>Tim kami akan memverifikasi resep dalam 1x24 jam</li>
+        </ol>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2023 Medicare. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

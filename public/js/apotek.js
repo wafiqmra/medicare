@@ -1,425 +1,477 @@
-// Sample product data
-const products = [
-  {
-    id: 1,
-    name: "Paracetamol 500mg",
-    price: 15000,
-    stock: 50,
-    image: "https://via.placeholder.com/150?text=Paracetamol"
-  },
-  {
-    id: 2,
-    name: "Amoxicillin 500mg",
-    price: 25000,
-    stock: 30,
-    image: "https://via.placeholder.com/150?text=Amoxicillin"
-  },
-  {
-    id: 3,
-    name: "Vitamin C 500mg",
-    price: 20000,
-    stock: 100,
-    image: "https://via.placeholder.com/150?text=Vitamin+C"
-  },
-  {
-    id: 4,
-    name: "Omeprazole 20mg",
-    price: 30000,
-    stock: 25,
-    image: "https://via.placeholder.com/150?text=Omeprazole"
-  },
-  {
-    id: 5,
-    name: "Cetirizine 10mg",
-    price: 18000,
-    stock: 40,
-    image: "https://via.placeholder.com/150?text=Cetirizine"
-  },
-  {
-    id: 6,
-    name: "Ibuprofen 400mg",
-    price: 22000,
-    stock: 35,
-    image: "https://via.placeholder.com/150?text=Ibuprofen"
-  }
-];
-
-// DOM Elements
-const productsGrid = document.getElementById('productsGrid');
-const cartItems = document.getElementById('cartItems');
-const cartTotal = document.getElementById('cartTotal');
-const checkoutBtn = document.getElementById('checkoutBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const addressModal = document.getElementById('addressModal');
-const receiptModal = document.getElementById('receiptModal');
-const addressForm = document.getElementById('addressForm');
-const receiptContent = document.getElementById('receiptContent');
-const printReceiptBtn = document.getElementById('printReceiptBtn');
-const finishBtn = document.getElementById('finishBtn');
-
-// Cart state
-let cart = [];
-
-// Initialize the app
-function init() {
-  renderProducts(products);
-  loadCart();
-  setupEventListeners();
-}
-
-// Render products to the page
-function renderProducts(productsToRender) {
-  productsGrid.innerHTML = '';
-  
-  productsToRender.forEach(product => {
-    const productCard = document.createElement('div');
-    productCard.className = 'product-card';
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+    const productsContainer = document.getElementById('products');
+    const checkoutForm = document.getElementById('checkout-form');
+    const receiptContainer = document.getElementById('receipt');
+    const printReceiptBtn = document.getElementById('print-receipt');
+    const closeReceiptBtn = document.getElementById('close-receipt');
+    const receiptModal = document.getElementById('receipt-modal');
+    const cartCount = document.getElementById('cart-count');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const cartIcon = document.querySelector('.cart-icon');
+    const sidebar = document.querySelector('.sidebar');
     
-    const inCart = cart.find(item => item.id === product.id);
-    const availableStock = product.stock - (inCart ? inCart.quantity : 0);
+    let cart = [];
     
-    productCard.innerHTML = `
-      <img src="${product.image}" alt="${product.name}" class="product-image">
-      <h3 class="product-name">${product.name}</h3>
-      <p class="product-price">Rp ${product.price.toLocaleString()}</p>
-      <p class="product-stock">Stok: ${availableStock}</p>
-      <button class="add-to-cart" data-id="${product.id}" ${availableStock <= 0 ? 'disabled' : ''}>
-        ${availableStock <= 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
-      </button>
-    `;
+    // Initialize
+    loadProducts();
+    updateCartDisplay();
     
-    productsGrid.appendChild(productCard);
-  });
-}
-
-// Load cart from localStorage
-function loadCart() {
-  const savedCart = localStorage.getItem('apotek_medicare_cart');
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-    renderCart();
-  }
-}
-
-// Save cart to localStorage
-function saveCart() {
-  localStorage.setItem('apotek_medicare_cart', JSON.stringify(cart));
-}
-
-// Render cart items
-function renderCart() {
-  cartItems.innerHTML = '';
-  
-  if (cart.length === 0) {
-    cartItems.innerHTML = '<p>Keranjang belanja kosong</p>';
-    cartTotal.textContent = 'Rp 0';
-    checkoutBtn.disabled = true;
-    return;
-  }
-  
-  let total = 0;
-  
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    const itemTotal = product.price * item.quantity;
-    total += itemTotal;
-    
-    const cartItem = document.createElement('div');
-    cartItem.className = 'cart-item';
-    
-    cartItem.innerHTML = `
-      <div class="cart-item-info">
-        <div class="cart-item-name">${product.name}</div>
-        <div class="cart-item-price">Rp ${product.price.toLocaleString()} x ${item.quantity}</div>
-      </div>
-      <div class="cart-item-total">Rp ${itemTotal.toLocaleString()}</div>
-      <div class="cart-item-actions">
-        <div class="cart-item-quantity">
-          <button class="decrease-quantity" data-id="${product.id}">-</button>
-          <span>${item.quantity}</span>
-          <button class="increase-quantity" data-id="${product.id}" ${item.quantity >= product.stock ? 'disabled' : ''}>+</button>
-        </div>
-        <button class="remove-item" data-id="${product.id}"><i class="fas fa-trash"></i></button>
-      </div>
-    `;
-    
-    cartItems.appendChild(cartItem);
-  });
-  
-  cartTotal.textContent = `Rp ${total.toLocaleString()}`;
-  checkoutBtn.disabled = false;
-  
-  // Re-render products to update stock availability
-  renderProducts(products);
-}
-
-// Setup event listeners
-function setupEventListeners() {
-  // Add to cart buttons
-  productsGrid.addEventListener('click', (e) => {
-    if (e.target.classList.contains('add-to-cart')) {
-      const productId = parseInt(e.target.getAttribute('data-id'));
-      addToCart(productId);
-    }
-  });
-  
-  // Cart item actions
-  cartItems.addEventListener('click', (e) => {
-    if (e.target.classList.contains('decrease-quantity') || e.target.parentElement.classList.contains('decrease-quantity')) {
-      const button = e.target.classList.contains('decrease-quantity') ? e.target : e.target.parentElement;
-      const productId = parseInt(button.getAttribute('data-id'));
-      updateCartItemQuantity(productId, -1);
-    }
-    
-    if (e.target.classList.contains('increase-quantity') || e.target.parentElement.classList.contains('increase-quantity')) {
-      const button = e.target.classList.contains('increase-quantity') ? e.target : e.target.parentElement;
-      const productId = parseInt(button.getAttribute('data-id'));
-      updateCartItemQuantity(productId, 1);
-    }
-    
-    if (e.target.classList.contains('remove-item') || e.target.parentElement.classList.contains('remove-item')) {
-      const button = e.target.classList.contains('remove-item') ? e.target : e.target.parentElement;
-      const productId = parseInt(button.getAttribute('data-id'));
-      removeFromCart(productId);
-    }
-  });
-  
-  // Search functionality
-  searchBtn.addEventListener('click', searchProducts);
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      searchProducts();
-    }
-  });
-  
-  // Checkout button
-  checkoutBtn.addEventListener('click', () => {
-    addressModal.style.display = 'flex';
-  });
-  
-  // Address form submission
-  addressForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    processCheckout();
-  });
-  
-  // Modal close buttons
-  document.querySelectorAll('.close-btn').forEach(button => {
-    button.addEventListener('click', () => {
-      addressModal.style.display = 'none';
-      receiptModal.style.display = 'none';
+    // Toggle sidebar on mobile
+    cartIcon.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
     });
-  });
-  
-  // Print receipt button
-  printReceiptBtn.addEventListener('click', printReceipt);
-  
-  // Finish button
-  finishBtn.addEventListener('click', () => {
-    receiptModal.style.display = 'none';
-    cart = [];
-    saveCart();
-    renderCart();
-    renderProducts(products);
-  });
-}
-
-// Add product to cart
-function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
-  
-  if (!product) return;
-  
-  const existingItem = cart.find(item => item.id === productId);
-  
-  if (existingItem) {
-    if (existingItem.quantity < product.stock) {
-      existingItem.quantity += 1;
+    
+    // Load products from server
+    function loadProducts() {
+        fetch('/apotek/products')
+            .then(response => response.json())
+            .then(products => {
+                displayProducts(products);
+            })
+            .catch(error => console.error('Error:', error));
     }
-  } else {
-    cart.push({ id: productId, quantity: 1 });
-  }
-  
-  saveCart();
-  renderCart();
-}
-
-// Update cart item quantity
-function updateCartItemQuantity(productId, change) {
-  const item = cart.find(item => item.id === productId);
-  const product = products.find(p => p.id === productId);
-  
-  if (!item || !product) return;
-  
-  const newQuantity = item.quantity + change;
-  
-  if (newQuantity <= 0) {
-    removeFromCart(productId);
-    return;
-  }
-  
-  if (newQuantity > product.stock) {
-    return;
-  }
-  
-  item.quantity = newQuantity;
-  saveCart();
-  renderCart();
-}
-
-// Remove product from cart
-function removeFromCart(productId) {
-  cart = cart.filter(item => item.id !== productId);
-  saveCart();
-  renderCart();
-}
-
-// Search products
-function searchProducts() {
-  const searchTerm = searchInput.value.trim().toLowerCase();
-  
-  if (searchTerm === '') {
-    renderProducts(products);
-    return;
-  }
-  
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm)
-  );
-  
-  renderProducts(filteredProducts);
-}
-
-// Process checkout
-function processCheckout() {
-  const name = document.getElementById('name').value;
-  const phone = document.getElementById('phone').value;
-  const address = document.getElementById('address').value;
-  
-  generateReceipt(name, phone, address);
-  addressModal.style.display = 'none';
-  receiptModal.style.display = 'flex';
-}
-
-// Generate receipt
-function generateReceipt(name, phone, address) {
-  let total = 0;
-  const date = new Date();
-  
-  let itemsHtml = '';
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    const itemTotal = product.price * item.quantity;
-    total += itemTotal;
     
-    itemsHtml += `
-      <tr>
-        <td>${product.name} x${item.quantity}</td>
-        <td>Rp ${itemTotal.toLocaleString()}</td>
-      </tr>
-    `;
-  });
-  
-  receiptContent.innerHTML = `
-    <div class="receipt-header">
-      <h3>Apotek Medicare</h3>
-      <p>Jl. Kesehatan No. 123, Jakarta</p>
-      <p>Telp: (021) 1234567</p>
-    </div>
-    
-    <div class="receipt-details">
-      <p><strong>No. Transaksi:</strong> ${date.getTime()}</p>
-      <p><strong>Tanggal:</strong> ${date.toLocaleDateString()} ${date.toLocaleTimeString()}</p>
-      <p><strong>Nama:</strong> ${name}</p>
-      <p><strong>Telepon:</strong> ${phone}</p>
-      <p><strong>Alamat:</strong> ${address}</p>
-    </div>
-    
-    <table class="receipt-items">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHtml}
-      </tbody>
-    </table>
-    
-    <div class="receipt-total">
-      <p>Total: Rp ${total.toLocaleString()}</p>
-    </div>
-    
-    <div class="receipt-footer">
-      <p>Terima kasih telah berbelanja di Apotek Medicare</p>
-      <p>Obat akan segera dikirim ke alamat Anda</p>
-    </div>
-  `;
-}
-
-// Print receipt
-function printReceipt() {
-  const receipt = receiptContent.innerHTML;
-  const originalContent = document.body.innerHTML;
-  
-  document.body.innerHTML = `
-    <style>
-      body {
-        font-family: 'Courier New', Courier, monospace;
-        padding: 20px;
-      }
-      .receipt {
-        width: 80mm;
-        margin: 0 auto;
-      }
-      .receipt-header {
-        text-align: center;
-        margin-bottom: 15px;
-      }
-      .receipt-items {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-      }
-      .receipt-items th {
-        text-align: left;
-        padding: 5px 0;
-        border-bottom: 1px dashed #000;
-      }
-      .receipt-items td {
-        padding: 5px 0;
-      }
-      .receipt-total {
-        text-align: right;
-        font-weight: bold;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px dashed #000;
-      }
-      .receipt-footer {
-        margin-top: 20px;
-        font-size: 12px;
-        text-align: center;
-      }
-      @media print {
-        @page {
-          size: auto;
-          margin: 0;
+    // Display products
+    function displayProducts(products) {
+        productsContainer.innerHTML = '';
+        
+        if (products.length === 0) {
+            productsContainer.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-box-open"></i>
+                    <p>Tidak ada produk tersedia</p>
+                </div>
+            `;
+            return;
         }
-        body {
-          padding: 10px;
+        
+        products.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.className = 'product';
+            productElement.innerHTML = `
+                <img src="${product.image_path || 'images/default-product.png'}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.description || 'No description available'}</p>
+                <p class="price">Rp ${product.price.toLocaleString('id-ID')}</p>
+                <p class="stock">Stok: ${product.stock}</p>
+                <div class="product-actions">
+                    <input type="number" min="1" max="${product.stock}" value="1" class="quantity-input">
+                    <button class="add-to-cart" data-id="${product.id}">
+                        <i class="fas fa-cart-plus"></i> Tambah
+                    </button>
+                </div>
+            `;
+            
+            productsContainer.appendChild(productElement);
+        });
+        
+        // Add event listeners to all add-to-cart buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                const quantityInput = this.previousElementSibling;
+                const quantity = parseInt(quantityInput.value);
+                
+                addToCart(productId, quantity);
+            });
+        });
+    }
+    
+    // Add item to cart
+    function addToCart(productId, quantity) {
+        fetch('/apotek/add-to-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showAlert(data.error, 'error');
+            } else {
+                cart = data.cart;
+                updateCartDisplay();
+                showAlert('Produk telah ditambahkan ke keranjang', 'success');
+                sidebar.classList.add('active'); // Show sidebar on mobile
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Terjadi kesalahan saat menambahkan ke keranjang', 'error');
+        });
+    }
+    
+    // Update cart display
+    function updateCartDisplay() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+        
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-basket"></i>
+                    <p>Keranjang belanja kosong</p>
+                </div>
+            `;
+            cartTotalElement.textContent = 'Rp 0';
+            cartCount.textContent = '0';
+            checkoutBtn.disabled = true;
+            return;
         }
-      }
-    </style>
-    <div class="receipt">${receipt}</div>
-  `;
-  
-  window.print();
-  document.body.innerHTML = originalContent;
-  renderCart();
-}
+        
+        cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        checkoutBtn.disabled = false;
+        
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+            cartItem.innerHTML = `
+                <img src="${item.image || 'images/default-product.png'}" alt="${item.name}">
+                <div class="cart-item-details">
+                    <h4>${item.name}</h4>
+                    <p>Rp ${item.price.toLocaleString('id-ID')} x 
+                    <input type="number" min="1" max="${item.stock}" value="${item.quantity}" 
+                           data-id="${item.id}" class="cart-quantity"> = 
+                    Rp ${itemTotal.toLocaleString('id-ID')}</p>
+                </div>
+                <button class="remove-from-cart" data-id="${item.id}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            cartItemsContainer.appendChild(cartItem);
+        });
+        
+        cartTotalElement.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        
+        // Add event listeners to quantity inputs
+        document.querySelectorAll('.cart-quantity').forEach(input => {
+            input.addEventListener('change', function() {
+                const productId = this.getAttribute('data-id');
+                const quantity = parseInt(this.value);
+                
+                if (quantity < 1) {
+                    this.value = 1;
+                    return;
+                }
+                
+                updateCartItem(productId, quantity);
+            });
+        });
+        
+        // Add event listeners to remove buttons
+        document.querySelectorAll('.remove-from-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                removeFromCart(productId);
+            });
+        });
+    }
+    
+    // Update cart item quantity
+    function updateCartItem(productId, quantity) {
+        fetch('/apotek/update-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            cart = data.cart;
+            updateCartDisplay();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Terjadi kesalahan saat memperbarui keranjang', 'error');
+        });
+    }
+    
+    // Remove item from cart
+    function removeFromCart(productId) {
+        fetch('/apotek/remove-from-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            cart = data.cart;
+            updateCartDisplay();
+            showAlert('Produk dihapus dari keranjang', 'info');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Terjadi kesalahan saat menghapus dari keranjang', 'error');
+        });
+    }
+    
+    // Validate checkout form
+    function validateCheckoutForm() {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const shippingAddress = document.getElementById('shipping-address').value.trim();
+        
+        if (!name) {
+            showAlert('Nama lengkap harus diisi', 'error');
+            return false;
+        }
+        if (!email) {
+            showAlert('Email harus diisi', 'error');
+            return false;
+        }
+        if (!phone) {
+            showAlert('Nomor telepon harus diisi', 'error');
+            return false;
+        }
+        if (!address) {
+            showAlert('Alamat harus diisi', 'error');
+            return false;
+        }
+        if (!shippingAddress) {
+            showAlert('Alamat pengiriman harus diisi', 'error');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Handle checkout form submission
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (cart.length === 0) {
+            showAlert('Keranjang belanja kosong', 'error');
+            return;
+        }
+        
+        if (!validateCheckoutForm()) {
+            return;
+        }
+        
+        const formData = new FormData(this);
+        const customerData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            address: formData.get('address'),
+            shipping_address: formData.get('shipping-address')
+        };
+        
+        // Add loading state
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+        
+        fetch('/apotek/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(customerData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showAlert(data.error, 'error');
+            } else {
+                showReceipt(data.orderId);
+                cart = [];
+                updateCartDisplay();
+                checkoutForm.reset();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Terjadi kesalahan saat checkout', 'error');
+        })
+        .finally(() => {
+            // Reset button state
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = '<i class="fas fa-credit-card"></i> Checkout';
+        });
+    });
+    
+    // Show receipt
+    function showReceipt(orderId) {
+        fetch(`/apotek/order/${orderId}`)
+            .then(response => response.json())
+            .then(data => {
+                const order = data.order;
+                const items = data.items;
+                
+                let itemsHtml = '';
+                let total = 0;
+                
+                items.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    
+                    itemsHtml += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.quantity}</td>
+                            <td>Rp ${item.price.toLocaleString('id-ID')}</td>
+                            <td>Rp ${itemTotal.toLocaleString('id-ID')}</td>
+                        </tr>
+                    `;
+                });
+                
+                receiptContainer.innerHTML = `
+                    <div class="receipt-header">
+                        <h2>Struk Pembelian</h2>
+                        <h3>Medicare Pharmacy</h3>
+                        <p>No. Pesanan: ${order.id}</p>
+                        <p>Tanggal: ${new Date(order.order_date).toLocaleString('id-ID')}</p>
+                    </div>
+                    
+                    <div class="customer-info">
+                        <h4>Informasi Pelanggan</h4>
+                        <p><strong>Nama:</strong> ${order.customer_name}</p>
+                        <p><strong>Email:</strong> ${order.email}</p>
+                        <p><strong>Telepon:</strong> ${order.phone}</p>
+                        <p><strong>Alamat Pengiriman:</strong> ${order.shipping_address}</p>
+                    </div>
+                    
+                    <table class="receipt-items">
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Qty</th>
+                                <th>Harga</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="total-label">Total</td>
+                                <td class="total-amount">Rp ${total.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <div class="receipt-footer">
+                        <p>Terima kasih telah berbelanja di Medicare Pharmacy</p>
+                        <p>Barang yang sudah dibeli tidak dapat dikembalikan</p>
+                    </div>
+                `;
+                
+                receiptModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan saat memuat struk', 'error');
+            });
+    }
+    
+    // Print receipt
+    printReceiptBtn.addEventListener('click', function() {
+        window.print();
+    });
+    
+    // Close receipt
+    closeReceiptBtn.addEventListener('click', closeReceipt);
+    
+    // Close modal when clicking outside
+    receiptModal.addEventListener('click', function(e) {
+        if (e.target === receiptModal) {
+            closeReceipt();
+        }
+    });
+    
+    function closeReceipt() {
+        receiptModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Show alert message
+    function showAlert(message, type) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.innerHTML = `
+            <span>${message}</span>
+            <button class="close-alert">&times;</button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alert.classList.add('fade-out');
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }, 3000);
+        
+        // Close button
+        alert.querySelector('.close-alert').addEventListener('click', () => {
+            alert.remove();
+        });
+    }
+});
 
-// Initialize the application
-init();
+// Add alert styles to CSS
+const style = document.createElement('style');
+style.textContent = `
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 250px;
+        max-width: 350px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        z-index: 3000;
+        transform: translateX(0);
+        opacity: 1;
+        transition: all 0.3s ease;
+    }
+    
+    .alert-success {
+        background-color: #2ecc71;
+    }
+    
+    .alert-error {
+        background-color: #e74c3c;
+    }
+    
+    .alert-info {
+        background-color: #3498db;
+    }
+    
+    .close-alert {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+    
+    .fade-out {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+`;
+document.head.appendChild(style);

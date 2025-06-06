@@ -10,7 +10,6 @@ const PORT = 3001;
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
 // Session configuration
 app.use(session({
@@ -20,6 +19,10 @@ app.use(session({
   cookie: { secure: false } // Set to true if using HTTPS
 }));
 
+// Static files configuration (letakkan di awal)
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/views', express.static(path.join(__dirname, 'views')));
+
 // Authentication middleware
 function requireLogin(req, res, next) {
   if (!req.session.username) {
@@ -28,7 +31,7 @@ function requireLogin(req, res, next) {
   next();
 }
 
-// View routes
+// ========== VIEW ROUTES ========== //
 app.get('/', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'views/index.html'));
 });
@@ -47,7 +50,7 @@ app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/register.html'));
 });
 
-// Authentication routes
+// ========== AUTHENTICATION ROUTES ========== //
 app.post('/register', (req, res) => {
   const { username, password } = req.body;
 
@@ -86,7 +89,7 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Import fitur routes, termasuk fungsiObat
+// ========== FEATURE ROUTES ========== //
 const featureRouters = {
   '/apotek': require('./routes/apotek'),
   '/diagnosa': require('./routes/diagnosa'),
@@ -95,7 +98,7 @@ const featureRouters = {
   '/uploadresep': require('./routes/uploadresep'),
   '/promoobat': require('./routes/promoobat'),
   '/lacakpesanan': require('./routes/lacakpesanan'),
-  '/fungsiobat': require('./routes/fungsiobat')  // <-- Tambahan fungsiobat di sini
+  '/fungsiobat': require('./routes/fungsiobat')
 };
 
 // Daftarkan semua route fitur dengan requireLogin
@@ -103,16 +106,18 @@ Object.entries(featureRouters).forEach(([path, router]) => {
   app.use(path, requireLogin, router);
 });
 
-// Static files
-app.use('/views', express.static(path.join(__dirname, 'views')));
+// Route untuk halaman apotek
+app.get('/apotek', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views/apotek.html'));
+});
 
-// Error handling
+// ========== ERROR HANDLING ========== //
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Terjadi kesalahan pada server');
 });
 
-// 404 handler
+// 404 handler (harus di bagian paling akhir)
 app.use((req, res) => {
   res.status(404).send('Halaman tidak ditemukan');
 });

@@ -2,75 +2,192 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Fungsi Obat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fungsi Obat | Informasi Lengkap</title>
   <style>
+    :root {
+      --primary-color: #00bfa6;
+      --primary-hover: #009688;
+      --background: #f5f5f5;
+      --card-bg: #ffffff;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f5f5f5;
-    }
-    h1 {
-      color: #00bfa6;
-    }
-    .obat {
-      background: white;
-      margin-bottom: 1rem;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
       padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background-color: var(--background);
+      color: #333;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+    
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+    
+    .obat-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .obat {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .obat:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    
     .obat h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.25rem;
+      margin: 0 0 1rem;
+      font-size: 1.3rem;
+      color: var(--primary-color);
     }
+    
     .obat p {
-      margin: 0.25rem 0;
+      margin: 0.5rem 0;
     }
+    
+    .obat strong {
+      color: #555;
+    }
+    
+    .loading, .error {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+    }
+    
+    .loading {
+      color: #666;
+    }
+    
+    .error {
+      color: #d32f2f;
+    }
+    
     .back-link {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       margin-top: 2rem;
       text-decoration: none;
-      color: #00bfa6;
-      font-weight: bold;
-      border: 2px solid #00bfa6;
-      padding: 0.5rem 1rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      border: 2px solid var(--primary-color);
+      padding: 0.75rem 1.5rem;
       border-radius: 8px;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease;
     }
+    
     .back-link:hover {
-      background-color: #00bfa6;
+      background-color: var(--primary-color);
       color: white;
+      transform: translateX(-5px);
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .obat-container {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Fungsi Obat</h1>
-  <div id="data">Memuat data...</div>
+  <h1>Informasi Fungsi Obat</h1>
+  
+  <div id="data">
+    <div class="loading">
+      <p>Memuat data obat...</p>
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
 
-  <a href="/" class="back-link">&larr; Kembali ke Menu</a>
+  <a href="/" class="back-link">
+    <span>&larr;</span>
+    <span style="margin-left: 8px;">Kembali ke Menu Utama</span>
+  </a>
 
   <script>
-    fetch('/fungsiobat/data')
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById('data');
-        container.innerHTML = '';
-
-        data.forEach(obat => {
-          const div = document.createElement('div');
-          div.className = 'obat';
-          div.innerHTML = `
-            <h2>${obat.nama_obat}</h2>
-            <p><strong>Fungsi:</strong> ${obat.fungsi}</p>
-            <p><strong>Cara Pakai:</strong> ${obat.cara_pakai}</p>
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.getElementById('data');
+      
+      // Tambahkan animasi loading
+      container.innerHTML = `
+        <div class="loading">
+          <p>Memuat data obat...</p>
+          <div class="loading-spinner" style="
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+          "></div>
+        </div>
+      `;
+      
+      fetch('/fungsiobat/data')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.length === 0) {
+            container.innerHTML = `
+              <div class="error">
+                <p>Tidak ada data obat yang tersedia.</p>
+              </div>
+            `;
+            return;
+          }
+          
+          container.innerHTML = '<div class="obat-container"></div>';
+          const obatContainer = document.querySelector('.obat-container');
+          
+          data.forEach(obat => {
+            const div = document.createElement('div');
+            div.className = 'obat';
+            div.innerHTML = `
+              <h2>${obat.nama_obat}</h2>
+              <p><strong>Fungsi:</strong> ${obat.fungsi}</p>
+              <p><strong>Cara Pakai:</strong> ${obat.cara_pakai}</p>
+              ${obat.efek_samping ? `<p><strong>Efek Samping:</strong> ${obat.efek_samping}</p>` : ''}
+            `;
+            obatContainer.appendChild(div);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          container.innerHTML = `
+            <div class="error">
+              <p>Gagal memuat data fungsi obat.</p>
+              <p>Silakan coba lagi nanti atau hubungi administrator.</p>
+            </div>
           `;
-          container.appendChild(div);
         });
-      })
-      .catch(error => {
-        document.getElementById('data').innerText = 'Gagal memuat data fungsi obat.';
-        console.error(error);
-      });
+    });
   </script>
 </body>
 </html>

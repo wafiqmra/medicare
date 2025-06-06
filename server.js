@@ -86,18 +86,19 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Protected feature routes
+// Import fitur routes, termasuk fungsiObat
 const featureRouters = {
   '/apotek': require('./routes/apotek'),
   '/diagnosa': require('./routes/diagnosa'),
   '/telemedicine': require('./routes/telemedicine'),
-  '/risetobat': require('./routes/risetobat'),
+  '/risetobat': require('./routes/fungsiobat'),
   '/uploadresep': require('./routes/uploadresep'),
   '/promoobat': require('./routes/promoobat'),
-  '/lacakpesanan': require('./routes/lacakpesanan')
+  '/lacakpesanan': require('./routes/lacakpesanan'),
+  '/fungsiobat': require('./routes/fungsiobat')  // <-- Tambahan fungsiobat di sini
 };
 
-// Register all protected routes
+// Daftarkan semua route fitur dengan requireLogin
 Object.entries(featureRouters).forEach(([path, router]) => {
   app.use(path, requireLogin, router);
 });

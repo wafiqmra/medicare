@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Fungsi Obat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #00bfa6;
+    }
+    .obat {
+      background: white;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .obat h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.25rem;
+    }
+    .obat p {
+      margin: 0.25rem 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      text-decoration: none;
+      color: #00bfa6;
+      font-weight: bold;
+      border: 2px solid #00bfa6;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .back-link:hover {
+      background-color: #00bfa6;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fungsi Obat</h1>
+  <div id="data">Memuat data...</div>
+
+  <a href="/" class="back-link">&larr; Kembali ke Menu</a>
+
+  <script>
+    fetch('/fungsiobat/data')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('data');
+        container.innerHTML = '';
+
+        data.forEach(obat => {
+          const div = document.createElement('div');
+          div.className = 'obat';
+          div.innerHTML = `
+            <h2>${obat.nama_obat}</h2>
+            <p><strong>Fungsi:</strong> ${obat.fungsi}</p>
+            <p><strong>Cara Pakai:</strong> ${obat.cara_pakai}</p>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(error => {
+        document.getElementById('data').innerText = 'Gagal memuat data fungsi obat.';
+        console.error(error);
+      });
+  </script>
+</body>
+</html>

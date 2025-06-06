@@ -94,10 +94,10 @@ const featureRouters = {
   '/apotek': require('./routes/apotek'),
   '/diagnosa': require('./routes/diagnosa'),
   '/telemedicine': require('./routes/telemedicine'),
-  '/risetobat': require('./routes/fungsiobat'),
-  '/uploadresep': require('./routes/uploadresep'),
-  '/promoobat': require('./routes/promoobat'),
-  '/lacakpesanan': require('./routes/lacakpesanan'),
+  // '/risetobat': require('./routes/fungsiobat'),
+  // '/uploadresep': require('./routes/uploadresep'),
+  // '/promoobat': require('./routes/promoobat'),
+  // '/lacakpesanan': require('./routes/lacakpesanan'),
   '/fungsiobat': require('./routes/fungsiobat')
 };
 

@@ -14,9 +14,14 @@
                 <i class="fas fa-prescription-bottle-alt"></i>
                 <h1>Medicare Pharmacy</h1>
             </div>
-            <div class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count">0</span>
+            <div class="header-actions">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Menu Utama
+                </a>
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </div>
             </div>
         </div>
     </header>
@@ -50,6 +55,9 @@
                                 <span>Total:</span>
                                 <span id="cart-total">Rp 0</span>
                             </div>
+                            <button type="button" id="checkout-btn" class="checkout-btn">
+                                <i class="fas fa-credit-card"></i> Checkout
+                            </button>
                         </div>
                     </section>
 
@@ -84,8 +92,8 @@
                             </div>
                             
                             <div class="form-group">
-                                <button type="submit" id="checkout-btn" class="checkout-btn">
-                                    <i class="fas fa-credit-card"></i> Checkout
+                                <button type="submit" class="submit-btn">
+                                    <i class="fas fa-credit-card"></i> Proses Pembayaran
                                 </button>
                             </div>
                         </form>
@@ -98,7 +106,7 @@
     <!-- Receipt Modal -->
     <div id="receipt-modal" class="modal">
         <div class="modal-content">
-            <button class="close-modal">&times;</button>
+            <button id="close-receipt" class="close-modal">&times;</button>
             <div id="receipt" class="receipt-content">
                 <!-- Receipt will be loaded here -->
             </div>
@@ -106,7 +114,7 @@
                 <button id="print-receipt" class="print-btn">
                     <i class="fas fa-print"></i> Cetak Struk
                 </button>
-                <button id="close-receipt" class="close-btn">
+                <button id="close-receipt-btn" class="close-btn">
                     <i class="fas fa-times"></i> Tutup
                 </button>
             </div>

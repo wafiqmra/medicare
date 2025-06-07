@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const receiptContainer = document.getElementById('receipt');
     const printReceiptBtn = document.getElementById('print-receipt');
     const closeReceiptBtn = document.getElementById('close-receipt');
+    const closeReceiptBtn2 = document.getElementById('close-receipt-btn');
     const receiptModal = document.getElementById('receipt-modal');
     const cartCount = document.getElementById('cart-count');
     const checkoutBtn = document.getElementById('checkout-btn');
@@ -272,8 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Add loading state
-        checkoutBtn.disabled = true;
-        checkoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+        const submitBtn = this.querySelector('.submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
         
         fetch('/apotek/checkout', {
             method: 'POST',
@@ -299,8 +301,9 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .finally(() => {
             // Reset button state
-            checkoutBtn.disabled = false;
-            checkoutBtn.innerHTML = '<i class="fas fa-credit-card"></i> Checkout';
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-credit-card"></i> Proses Pembayaran';
         });
     });
     
@@ -313,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const items = data.items;
                 
                 let itemsHtml = '';
+;
                 let total = 0;
                 
                 items.forEach(item => {
@@ -387,6 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close receipt
     closeReceiptBtn.addEventListener('click', closeReceipt);
+    closeReceiptBtn2.addEventListener('click', closeReceipt);
     
     // Close modal when clicking outside
     receiptModal.addEventListener('click', function(e) {
@@ -449,11 +454,11 @@ style.textContent = `
     }
     
     .alert-success {
-        background-color: #2ecc71;
+        background-color: #2a9d8f;
     }
     
     .alert-error {
-        background-color: #e74c3c;
+        background-color: #e76f51;
     }
     
     .alert-info {

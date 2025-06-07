@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 
 // Endpoint ambil data dari database
 router.get('/data', (req, res) => {
-  const query = 'SELECT id, nama_obat, fungsi, cara_pakai, efek_samping FROM fungsi_obat';
+  const query = 'SELECT id, nama_obat, fungsi, cara_pakai, efek_samping, gambar FROM fungsi_obat';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Gagal ambil data fungsi_obat:', err);

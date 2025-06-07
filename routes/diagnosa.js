@@ -1,19 +1,36 @@
-const express = require('express');
+const express = require("express");
+const path = require("path");
 const router = express.Router();
-const path = require('path');
+const axios = require("axios");
 
-router.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../views/diagnosa.html'));
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "diagnosa.html"));
 });
 
-router.post('/', (req, res) => {
-  const keluhan = req.body.keluhan.toLowerCase();
-  let hasil = "Keluhan tidak dikenali, silakan konsultasi lebih lanjut.";
+router.post("/", async (req, res) => {
+  const userMessage = req.body.message;
 
-  if (keluhan.includes("batuk")) hasil = "Kemungkinan infeksi saluran pernapasan.";
-  else if (keluhan.includes("sakit kepala")) hasil = "Kemungkinan migrain atau tekanan darah tinggi.";
+  try {
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions", // Ganti dengan endpoint sesuai OpenChat
+      {
+        message: userMessage,
+        model: "gpt-3.5-turbo"
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${process.env.OPENCHAT_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-  res.send(`<h2>Hasil Diagnosa</h2><p>${hasil}</p><a href="/diagnosa">Kembali</a>`);
+    const reply = response.data.reply || "Maaf, tidak ada respon.";
+    res.json({ reply });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ reply: "Terjadi kesalahan saat menghubungi API." });
+  }
 });
 
 module.exports = router;
